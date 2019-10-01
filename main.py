@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.utils import to_categorical
 from DL.basic_DL import basic_DL_2class
+from verification.data_split import split_from_separately
 
 
 ############################
@@ -34,6 +35,12 @@ y_test = to_categorical(y_test)
 # 2クラス分類とするためラベルデータから1列だけ取り出す
 y_train0 = y_train[:,0]
 y_test0 = y_test[:,0]
+
+
+#######################################
+####### 訓練データとテストデータに分割 #######
+#######################################
+x_train2, x_test2, y_train2, y_test2 = split_from_separately(x_train, y_train)
 
 
 ####################
