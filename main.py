@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.utils import to_categorical
 from DL.basic_DL import basic_DL_2class
-from verification.data_split import split_from_separately
+from verification.data_split import split_from_combined
+from sklearn.model_selection import StratifiedKFold
 
 
 ############################
@@ -40,7 +41,7 @@ y_test0 = y_test[:,0]
 #######################################
 ####### 訓練データとテストデータに分割 #######
 #######################################
-x_train2, x_test2, y_train2, y_test2 = split_from_separately(x_train, y_train)
+x_train2, x_test2, y_train2, y_test2 = split_from_combined(x_train, y_train)
 
 
 ####################
@@ -69,8 +70,21 @@ score = model.evaluate(x_test, y_test0, verbose=1)
 ####### 予測 #######
 ####################
 y_pred = model.predict(x_test)
+y_class = model.predict_classes(x_test)
+y_proba = model.predict_proba(x_test)
 
 
+#####################################
+####### 層化k分割交差検証で学習 #######
+#####################################
+# 層化k分割交差検証（訓練データとテストデータが分割されていないものに適用）
+kf = StratifiedKFold(n_splits=5, shuffle=True)
+kf.split(x_train, y_train0)
+score = []
+for train_index, test_index in kf.split(x_train, y_train0):
+    print('TRAIN:', y_train0[train_index], 'TEST:', y_train0[test_index])
+    model = basic_DL_2class(x_train[train_index], x_train[test_index], y_train0[train_index], y_train0[test_index])
+    score.append(model.evaluate(x_test, y_test0, verbose=1))
 
 
 
