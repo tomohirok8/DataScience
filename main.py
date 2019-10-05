@@ -4,14 +4,16 @@ os.getcwd()
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.utils import to_categorical
-from DL.basic_DL import basic_DL_2class
 from verification.data_split import split_from_combined
 from sklearn.model_selection import StratifiedKFold
 
 
-############################
+from DL.basic_DL import basic_DL_2class
+from ML.ML_grid_search import grid_search_SVM
+
+#############################
 ####### データの読み込み #######
-############################
+#############################
 # MNISTの手書き数字データセット（学習用と評価用に分割済）
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -72,6 +74,13 @@ score = model.evaluate(x_test, y_test0, verbose=1)
 y_pred = model.predict(x_test)
 y_class = model.predict_classes(x_test)
 y_proba = model.predict_proba(x_test)
+
+
+##########################
+####### グリッドサーチ #######
+##########################
+# SVMでグリッドサーチ
+grid_search_SVM(x_train, y_train0, x_test, y_test0)
 
 
 #####################################
