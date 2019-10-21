@@ -93,7 +93,7 @@ def SVM_linear(x_train, x_test, y_train, y_test, C):
     
     print(metrics.accuracy_score(y_test, y_pred))
 
-def SVM_rbf(x_train, x_test, y_train, y_test, gamma, C):
+def SVM_RBF(x_train, x_test, y_train, y_test, gamma, C):
     # インスタンス作成
     model = SVC(kernel='rbf', gamma=gamma, C=C)
     # 学習
