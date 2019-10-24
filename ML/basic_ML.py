@@ -136,8 +136,21 @@ def Random_Forest(x_train, x_test, y_train, y_test):
     print(metrics.accuracy_score(y_test, y_pred))
     return model
     
-    
-    
+
+# ランダムフォレストによる回帰
+def Random_Forest_Regression(x_train, x_test, y_train, y_test):
+    # インスタンス作成
+    model = RandomForestRegressor(100)
+    # 学習
+    model.fit(x_train[:, None], y_train)
+    # 予測値
+    y_pred = model.predict(x_test[:, None])
+    # 実際の値
+    # Plot
+    plt.figure(figsize=(11,7))
+    plt.errorbar(x_train, y_train, 0.1, fmt='o')
+    plt.plot(x_test, y_pred, '-r')
+    plt.plot(x_test, y_test, '-k', alpha=0.5)
     
     
     
