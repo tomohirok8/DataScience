@@ -18,15 +18,22 @@ def Local_Outlier_Factor(X, Y, n_neighbors, contamination):
     
     # 予測
     pred = model.fit_predict(dataset)
+    
+    outlier_index = np.where(pred == -1)
+    outlier = dataset[outlier_index]
      
     # 出力を可視化
-    plt.figure(figsize=(11,7)) 
-    # 正常データのプロット
-    plt.scatter(dataset[:,0][np.where(pred > 0)], dataset[:,1][np.where(pred > 0)], c='blue', s=20, marker='o')
-    # 異常データのプロット
-    plt.scatter(dataset[:,0][np.where(pred < 0)], dataset[:,1][np.where(pred < 0)], c='red', s=100, marker='x')
-    plt.title('Outlier by LOF')
+    plt.figure(figsize=(11,7))
+    plt.scatter(dataset[:,0], dataset[:,1], c='blue', edgecolor='k', s=20, marker='o', label='normal')
+    plt.scatter(outlier[:,0], outlier[:,1], c='red', edgecolor='k', s=100, marker='x', label='anormal')
+    plt.axis('tight')
+    plt.xlim((-0.1, 1.1))
+    plt.ylim((-0.1, 1.1))
+    plt.legend(loc="lower right")
+    plt.title("Local Outlier Factor")
     plt.show()
+    
+    return outlier_index[0]
 
 
 
@@ -61,6 +68,8 @@ def k_nearest_neighbor(X, Y, k, thresh):
     for i in range(len(hankei_list)):
         if hankei_list[i] > thresh:
             outlier_list[i] = 1
+    
+    outlier_index = np.where(np.array(outlier_list) == 1)
         
     df_dataset_hankei = pd.DataFrame(dataset, columns=['x', 'y'])
     df_dataset_hankei['hankei'] = hankei_list
@@ -83,6 +92,7 @@ def k_nearest_neighbor(X, Y, k, thresh):
     plt.title('k nearest neighbor')
     plt.show()
     
+    return outlier_index[0]
     
     
 def one_class_SVM(X, Y, nu):
@@ -96,7 +106,7 @@ def one_class_SVM(X, Y, nu):
     
     pred = model.predict(dataset)
     
-    xx, yy = np.meshgrid(np.linspace(-0.1,1.1,100), np.linspace(-0.1,1.1,100))
+    xx, yy = np.meshgrid(np.linspace(-0.1, 1.1, 100), np.linspace(-0.1, 1.1, 100))
     z = model.decision_function(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
     
     outlier_index = np.where(pred == -1)
@@ -105,16 +115,49 @@ def one_class_SVM(X, Y, nu):
     # 出力を可視化
     plt.figure(figsize=(11,7))
     plt.contourf(xx, yy, z, cmap='Blues_r')
-    plt.scatter(dataset[:,0], dataset[:,1], c='blue', edgecolor='k', s=80, marker='o', label='normal')
-    plt.scatter(outlier[:,0], outlier[:,1], c='red', edgecolor='k', s=50, marker='x', label='anormal')
+    plt.scatter(dataset[:,0], dataset[:,1], c='blue', edgecolor='k', s=20, marker='o', label='normal')
+    plt.scatter(outlier[:,0], outlier[:,1], c='red', edgecolor='k', s=100, marker='x', label='anormal')
     plt.axis('tight')
-    plt.xlim(-0.1,1.1)
-    plt.ylim(-0.1,1.1)
-    plt.legend(loc='lower right')#, prop=('size':12))
+    plt.xlim(-0.1, 1.1)
+    plt.ylim(-0.1, 1.1)
+    plt.legend(loc='lower right')
     plt.title('One class SVM')
     plt.show()
     
+    return outlier_index[0]
+    
 
+
+def Isolation_Forest(X, Y):
+    X_con  = np.stack([X, Y], axis=1)
+    ####### [0,1]に正規化 #######
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    dataset = scaler.fit_transform(X_con)
+    
+    model = IsolationForest(n_estimators=100, max_samples=100)
+    model.fit(dataset)
+
+    pred = model.predict(dataset)
+
+    outlier_index = np.where(pred == -1)
+    outlier = dataset[outlier_index]
+    
+    xx, yy = np.meshgrid(np.linspace(-0.1, 1.1, 100), np.linspace(-0.1, 1.1, 100))
+    Z = model.decision_function(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+    
+    # 出力を可視化
+    plt.figure(figsize=(11,7))
+    plt.contourf(xx, yy, Z, cmap=plt.cm.Blues_r)
+    plt.scatter(dataset[:,0], dataset[:,1], c='blue', edgecolor='k', s=20, marker='o', label='normal')
+    plt.scatter(outlier[:,0], outlier[:,1], c='red', edgecolor='k', s=100, marker='x', label='anormal')
+    plt.axis('tight')
+    plt.xlim((-0.1, 1.1))
+    plt.ylim((-0.1, 1.1))
+    plt.legend(loc="lower right")
+    plt.title("Isolation Forest")
+    plt.show()
+    
+    return outlier_index[0]
     
     
     
