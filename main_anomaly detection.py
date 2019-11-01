@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from AD.anomal_detection import Local_Outlier_Factor, k_nearest_neighbor, one_class_SVM, Isolation_Forest
 from data.read_data import read_data_01, make_random_XY
 
+
 #############################
 ####### データの読み込み #######
 #############################
