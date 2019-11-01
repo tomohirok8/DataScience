@@ -8,6 +8,7 @@ from sklearn import metrics
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.mixture import GaussianMixture
 
 
 # 線形単回帰
@@ -135,7 +136,34 @@ def Random_Forest(x_train, x_test, y_train, y_test):
     y_pred = model.predict(x_test)
     print(metrics.accuracy_score(y_test, y_pred))
     return model
-    
+
+
+# 混合ガウスモデル
+def GMM(x_train, x_test, y_train, y_test):
+    # クラス数
+    num_classes = len(np.unique(y_train))
+    # インスタンス作成
+    model = GaussianMixture(n_components=num_classes,
+                            covariance_type='full',
+                            init_params='random',
+                            random_state=0,
+                            max_iter=20)
+    # GMMの平均値を初期化
+    model.means_init = np.array([x_train[y_train == i].mean(axis=0) for i in range(num_classes)]) 
+    # 学習
+    model.fit(x_train)
+    y_pred = model.predict(x_test)
+    print(metrics.accuracy_score(y_test, y_pred))
+    return model
+
+
+
+
+
+
+
+
+
 
 # ランダムフォレストによる回帰
 def Random_Forest_Regression(x_train, x_test, y_train, y_test):
@@ -153,7 +181,7 @@ def Random_Forest_Regression(x_train, x_test, y_train, y_test):
     plt.plot(x_test, y_test, '-k', alpha=0.5)
     
     
-    
+
     
     
     
