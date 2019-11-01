@@ -7,9 +7,10 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 from verification.data_split import split_from_combined
-from ML.basic_ML import Logistic_Regression, k_NN, SVM_linear, SVM_RBF, SVM_poly, GNB_classify, Decision_Tree, Random_Forest
+from ML.basic_ML import Logistic_Regression, k_NN, SVM_linear, SVM_RBF, SVM_poly, GNB_classify, Decision_Tree, Random_Forest, GMM
 from ML.ML_grid_search import grid_search_SVM_RBF
 from data.read_data import read_data_Iris, make_data_blobs
+
 
 #############################
 ####### データの読み込み #######
@@ -19,6 +20,8 @@ from data.read_data import read_data_Iris, make_data_blobs
 
 ####### 多クラス分類 #######
 df_iris = read_data_Iris()
+x_train = df_iris.loc[:,['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width']].values
+y_train = df_iris.loc[:, 'Species'].values
 
 x_train, y_train = make_data_blobs()
 
@@ -40,6 +43,7 @@ model = SVM_poly(x_train, x_test, y_train, y_test, 0.3, 1.0)
 model = GNB_classify(x_train, x_test, y_train, y_test)
 model = Decision_Tree(x_train, x_test, y_train, y_test)
 model = Random_Forest(x_train, x_test, y_train, y_test)
+model = GMM(x_train, x_test, y_train, y_test)
 
 
 
