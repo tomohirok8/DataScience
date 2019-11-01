@@ -78,6 +78,25 @@ def read_data_01():
     plt.show()
     
     return X[:,0], X[:,1]
+
+
+def read_data_02():
+    X = np.loadtxt('data/data_clustering.txt', delimiter=',')
+    
+    # データプロット
+    plt.figure(figsize=(11,7))
+    plt.title('data02')
+    plt.scatter(X[:,0], X[:,1], marker='o', facecolors='none', edgecolors='black', s=80) 
+    x_min, x_max = X[:, 0].min()-1, X[:, 0].max()+1 
+    y_min, y_max = X[:, 1].min()-1, X[:, 1].max()+1
+    plt.xlim(x_min, x_max) 
+    plt.ylim(y_min, y_max) 
+    plt.xticks(()) 
+    plt.yticks(()) 
+    plt.show()
+    
+    return X[:,0], X[:,1]
+
     
     
 def make_random_sin():
