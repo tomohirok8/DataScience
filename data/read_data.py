@@ -132,6 +132,10 @@ def make_random_XY():
     return X[:,0], X[:,1]
 
 
+def electro_cardiogram():
+    data = np.loadtxt("data/qtdbsel102.txt",delimiter="\t")
+
+    return data
 
 
 
