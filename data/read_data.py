@@ -44,8 +44,8 @@ def read_data_Iris():
     df_iris = pd.concat([iris_data,iris_target],axis=1)
     
     # 可視化
-    sns.pairplot(iris,hue='Species',size=2)
-    sns.countplot('Petal Length',data=iris,hue='Species')
+    sns.pairplot(df_iris,hue='Species',size=2)
+    sns.countplot('Petal Length',data=df_iris,hue='Species')
     
     return df_iris
 
