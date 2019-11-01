@@ -5,6 +5,7 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.svm import OneClassSVM
 from sklearn.ensemble import IsolationForest
+from sklearn.neighbors import NearestNeighbors
 
 
 def Local_Outlier_Factor(X, Y, n_neighbors, contamination):
@@ -159,9 +160,113 @@ def Isolation_Forest(X, Y):
     
     return outlier_index[0]
     
+
+    
+def time_series_kNN(data):
+    def embed(lst, dim):
+        emb = np.empty((0,dim), float)
+        for i in range(lst.size - dim + 1):
+            tmp = np.array(lst[i:i+dim])[::-1].reshape((1,-1)) 
+            emb = np.append(emb, tmp, axis=0)
+        return emb
+ 
+    width = 100
+    nk = 1
+    
+    train_data = data[1:3000, 2]
+    test_data = data[3001:6000, 2]
+    
+    train = embed(train_data, width)
+    test = embed(test_data, width)
+    
+    neigh = NearestNeighbors(n_neighbors=nk)
+    neigh.fit(train)
+    d = neigh.kneighbors(test)[0]
+    
+    # 距離をmax1にするデータ整形
+    mx = np.max(d)
+    d = d / mx
+    
+    # プロット
+    test_for_plot = data[3001+width:6000, 2]
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ax2 = ax1.twinx()
+    
+    p1, = ax1.plot(d, '-b')
+    ax1.set_ylabel('distance')
+    ax1.set_ylim(0, 1.2)
+    p2, = ax2.plot(test_for_plot, '-g')
+    ax2.set_ylabel('original')
+    ax2.set_ylim(0, 12.0)
+    plt.title("Nearest Neighbors")
+    ax1.legend([p1, p2], ["distance", "original"])
+    plt.show()
     
     
+
+def time_series_singular_spectrum(data):
+    def embed(lst, dim):
+        emb = np.empty((0,dim), float)
+        for i in range(lst.size - dim + 1):
+            tmp = np.array(lst[i:i+dim])[::-1].reshape((1,-1)) 
+            emb = np.append(emb, tmp, axis=0)
+        return emb
     
+    train_data = data[1:3000, 2]
+    test_data = data[3001:6000, 2]
     
+    w = 50 # width
+    m = 2
+    k = int(w/2)
+    L = int(k/2) # lag
+    Tt = test_data.size
+    score = np.zeros(Tt)
     
+    for t in range(w+k, Tt-L+1+1):
+        tstart = t-w-k+1
+        tend = t-1
+        X1 = embed(test_data[tstart:tend], w).T[::-1, :] # trajectory matrix
+        X2 = embed(test_data[(tstart+L):(tend+L)], w).T[::-1, :] # test matrix
+    
+        U1, s1, V1 = np.linalg.svd(X1, full_matrices=True)
+        U1 = U1[:,0:m]
+        U2, s2, V2 = np.linalg.svd(X2, full_matrices=True)
+        U2 = U2[:,0:m]
+    
+        U, s, V = np.linalg.svd(U1.T.dot(U2), full_matrices=True)
+        sig1 = s[0]
+        score[t] = 1 - np.square(sig1)
+    
+    # 変化度をmax1にするデータ整形
+    mx = np.max(score)
+    score = score / mx
+    
+    # プロット
+    test_for_plot = data[3001:6000, 2]
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ax2 = ax1.twinx()
+    
+    p1, = ax1.plot(score, '-b')
+    ax1.set_ylabel('degree of change')
+    ax1.set_ylim(0, 1.2)
+    p2, = ax2.plot(test_for_plot, '-g')
+    ax2.set_ylabel('original')
+    ax2.set_ylim(0, 12.0)
+    plt.title("Singular Spectrum Transformation")
+    ax1.legend([p1, p2], ["degree of change", "original"])
+    plt.savefig('sst.png')
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+  
     
