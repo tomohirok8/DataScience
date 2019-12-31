@@ -4,8 +4,15 @@ import pandas as pd
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.datasets import make_blobs
+import tensorflow as tf
+print('tensorflow version', tf.__version__)
+if int(tf.__version__.split('.')[0]) >= 2:
+    from tensorflow import keras
+else:
+    import keras
 from keras.datasets import mnist
 from keras.utils import to_categorical
+
 
 
 def read_data_MNIST():
@@ -32,6 +39,7 @@ def read_data_MNIST():
 
     return x_train, y_train, x_test, y_test
  
+
     
 def read_data_Iris():
     iris = load_iris()
@@ -50,6 +58,7 @@ def read_data_Iris():
     return df_iris
 
 
+
 def make_data_blobs():
     X, Y = make_blobs(n_samples=500, centers=4, random_state=8, cluster_std=2.4)
     
@@ -61,6 +70,7 @@ def make_data_blobs():
     
     return X, Y
     
+
 
 def read_data_01():
     X = np.loadtxt('data/data_quality.txt', delimiter=',')
@@ -78,6 +88,7 @@ def read_data_01():
     plt.show()
     
     return X[:,0], X[:,1]
+
 
 
 def read_data_02():
@@ -121,6 +132,7 @@ def make_random_sin():
     return x_train, y_train, x_test, y_test
     
 
+
 def make_random_XY():
     # ダミーデータ生成
     X = 0.3 * np.random.randn(100, 2)
@@ -132,6 +144,7 @@ def make_random_XY():
     return X[:,0], X[:,1]
 
 
+
 def electro_cardiogram():
     data = np.loadtxt("data/qtdbsel102.txt",delimiter="\t")
 
@@ -139,6 +152,39 @@ def electro_cardiogram():
 
 
 
+def read_imdb():
+    imdb = keras.datasets.imdb
+    (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=10000)
+    
+    print("Training entries: {}, labels: {}".format(len(train_data), len(train_labels)))
+    
+    # A dictionary mapping words to an integer index
+    word_index = imdb.get_word_index()
+    # The first indices are reserved
+    word_index = {k:(v+3) for k,v in word_index.items()}
+    word_index["<pad>"] = 0
+    word_index["<start>"] = 1
+    word_index["<unk>"] = 2  # unknown
+    word_index["<unused>"] = 3
+     
+    reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
+     
+    def decode_review(text):
+        return ' '.join([reverse_word_index.get(i, '?') for i in text])
+    	
+    decode_review(train_data[0])
+    
+    train_data = keras.preprocessing.sequence.pad_sequences(train_data,
+                                                            value=word_index["<pad>"],
+                                                            padding='post',
+                                                            maxlen=256)
+     
+    test_data = keras.preprocessing.sequence.pad_sequences(test_data,
+                                                           value=word_index["<pad>"],
+                                                           padding='post',
+                                                           maxlen=256)
+    
+    return train_data, test_data, train_labels, test_labels, reverse_word_index
 
 
 
