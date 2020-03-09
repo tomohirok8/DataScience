@@ -108,7 +108,55 @@ def read_data_02():
     
     return X[:,0], X[:,1]
 
+
+
+def read_data_03():
+    data = np.loadtxt('data/knnsample.csv', delimiter=',')
+    X = data[:, :2]
+    Y = data[:, 2:].reshape(data.shape[0])
     
+    # データプロット
+    plt.figure(figsize=(11,7))
+    plt.title('data03')
+    plt.scatter(X[:,0], X[:,1], marker='o', facecolors='none', edgecolors='black', s=80) 
+    x_min, x_max = X[:, 0].min()-1, X[:, 0].max()+1 
+    y_min, y_max = X[:, 1].min()-1, X[:, 1].max()+1
+    plt.xlim(x_min, x_max) 
+    plt.ylim(y_min, y_max) 
+    plt.xticks(()) 
+    plt.yticks(()) 
+    plt.show()
+    
+    return X, Y
+
+
+
+def read_data_04():
+    data = np.loadtxt('data/OCSVM_sample.csv', delimiter=',')
+    
+    # データプロット
+    plt.figure(figsize=(11,7))
+    plt.title('data04')
+    plt.scatter(data[:,0], data[:,1], marker='o', facecolors='none', edgecolors='black', s=80) 
+    x_min, x_max = data[:, 0].min()-1, data[:, 0].max()+1 
+    y_min, y_max = data[:, 1].min()-1, data[:, 1].max()+1
+    plt.xlim(x_min, x_max) 
+    plt.ylim(y_min, y_max) 
+    plt.xticks(()) 
+    plt.yticks(()) 
+    plt.show()
+    
+    return data
+
+
+
+def read_data_05():
+    x = np.loadtxt('data/Cumulative_sum.csv', delimiter=',')
+    plt.plot(x)
+    
+    return x
+
+
     
 def make_random_sin():
     # ダミーデータ生成
