@@ -1,3 +1,4 @@
+####### カラーバーサンプルの表示 #######
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import OrderedDict
@@ -34,6 +35,14 @@ for cmap_category, cmap_list in cmaps.items():
 plt.show()
 
 
+
+####### カラーマップサンプルの表示 #######
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import OrderedDict
+import seaborn as sns
+sns.set()
+
 cmaps = OrderedDict()
 cmaps['Sequential'] = ['Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'OrRd', 'Oranges', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu', 'Reds', 'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd']
 cmaps['Sequential (2)'] = ['binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink', 'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia', 'hot', 'afmhot', 'gist_heat', 'copper']
@@ -59,6 +68,14 @@ density_plot(cmaps['Sequential (2)'])
 density_plot(cmaps['Diverging'])
 density_plot(cmaps['Qualitative'])
 density_plot(cmaps['Miscellaneous'])
+
+
+
+
+
+
+
+
 
 
 
